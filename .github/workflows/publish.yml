@@ -44,3 +44,9 @@ jobs:
 
       - name: Create package
         run: conan create ${{ matrix.package }}/all --version ${{ env.LATEST }} --build=missing
+
+      - name: Upload to swig-jse
+        run: |
+          conan remote add swig-jse https://swig.momtchev.com/artifactory/api/conan/swig-jse
+          conan remote login swig-jse github -p '${{ secrets.ARTIFACTORY_PASSWORD }}'
+          conan upload ${{ matrix.package }} -r=swig-jse
