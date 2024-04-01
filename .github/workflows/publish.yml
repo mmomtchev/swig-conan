@@ -22,11 +22,18 @@ jobs:
         id : conan
         uses: turtlebrowser/get-conan@main
 
+      - name: Cache conan artifacts
+        id: conan-artifacts
+        uses: actions/cache@v4
+        with:
+          path: ~/.conan2
+          key: ${{ runner.os }}-conan
+
       - name: Conan version
         run: echo "${{ steps.conan.outputs.version }}"
 
       - name: Create default profile
-        run: conan profile detect
+        run: conan profile detect || echo ok
 
       - name: Identify latest version
         run: |
@@ -35,4 +42,4 @@ jobs:
           python get_version.py ${{ matrix.package }}/config.yml >> $GITHUB_ENV
 
       - name: Create package
-        run: conan create ${{ matrix.package }}/all --version ${{ env.LATEST }}
+        run: conan create ${{ matrix.package }}/all --version ${{ env.LATEST }} --build=missing
