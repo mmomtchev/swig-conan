@@ -26,12 +26,12 @@ jobs:
         run: echo "${{ steps.conan.outputs.version }}"
 
       - name: Create default profile
-        run: conan profile new default --detect
+        run: conan profile detect
 
       - name: Identify latest version
         run: |
           pip install pyyaml
-          python get_version.py >> $GITHUB_ENV
+          python get_version.py ${{ matrix.package }}/config.yml  >> $GITHUB_ENV
 
       - name: Create package
         run: conan create ${{ matrix.package }}/all --version ${{ env.LATEST }}
