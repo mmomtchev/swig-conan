@@ -1,0 +1,15 @@
+sources:
+  "5.0.3":
+    url: "https://github.com/mmomtchev/swig/archive/refs/tags/v5.0.3.tar.gz"
+    sha256: "f6f9d77f85f8e16c237445ad65e170f2b6bc1f3292b876de6309369690b9f141"
+patches:
+  "5.0.3":
+    - patch_file: "patches/0001-swig-jse-linux-library-path.patch"
+      patch_type: "portability"
+      patch_description: "swig -swiglib should return the correct path next to the binary even when relocated"
+    - patch_file: "patches/0002-swig-jse-bison-msys2-path.patch"
+      patch_type: "portability"
+      patch_description: "allow to set bison from the environment"
+    - patch_file: "patches/0003-swig-jse-configure-path.patch"
+      patch_type: "portability"
+      patch_description: "more robust out-of-source build detection"
