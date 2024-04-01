@@ -40,6 +40,7 @@ jobs:
           pip install pyyaml
           python get_version.py ${{ matrix.package }}/config.yml
           python get_version.py ${{ matrix.package }}/config.yml >> $GITHUB_ENV
+        shell: bash
 
       - name: Create package
         run: conan create ${{ matrix.package }}/all --version ${{ env.LATEST }} --build=missing
