@@ -25,4 +25,4 @@ or
 swig/[>=4.2.1]
 ```
 
-Both packages have been tested on Linux-gcc-x64, macOS-clang-x64 and Windows-MSVC-MSYS2-x64
+Both packages have been tested on Linux-gcc-x64, macOS-clang-x64, macOS-clang-arm64 and Windows-MSVC-MSYS2-x64
