@@ -1,0 +1,13 @@
+--- configure.ac.orig	2024-07-30 18:05:47.050399710 +0200
++++ configure.ac	2024-07-30 18:06:41.450085763 +0200
+@@ -2932,7 +2932,9 @@
+ # source directory, and provides a rule for updating the Makefile from
+ # its original source.
+ AC_CONFIG_COMMANDS([Examples],[
+-  if test "x${srcdir}" != "x." ; then
++  CONFIG_SRC_DIR=`cd ${srcdir} && pwd | tr [A-Z] [a-z]`
++  CONFIG_TARGET_DIR=`pwd | tr [A-Z] [a-z]`
++  if test "x${CONFIG_SRC_DIR}" != "x${CONFIG_TARGET_DIR}" ; then
+     AC_MSG_NOTICE([generating Examples build tree])
+     for mkfile in `cd ${srcdir} && find Examples/ -type f -name Makefile`; do
+       dir=`dirname ${mkfile}`

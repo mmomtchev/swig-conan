@@ -1,0 +1,15 @@
+--- configure.ac.orig	2024-07-30 13:00:09.000000000 +0200
++++ configure.ac	2024-07-30 18:05:47.050399710 +0200
+@@ -101,7 +101,11 @@
+ echo "Note : None of the following packages are required for users to compile and install SWIG from the distributed tarball"
+ echo ""
+ 
+-AC_CHECK_PROGS([BISON], [bison], [$MISSING bison])
++if test -z "$BISON"; then
++  AC_CHECK_PROGS([BISON], [bison], [$MISSING bison])
++else
++  AC_MSG_NOTICE([Using bison from environment variable BISON... ${BISON}])
++fi
+ 
+ echo ""
+ echo "Checking for installed target languages and other information in order to compile and run"
