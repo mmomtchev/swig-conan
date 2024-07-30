@@ -2,7 +2,7 @@ name: Publish
 
 on:
   push:
-    branches: main
+    branches: '*'
 
 jobs:
   build:
@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-latest, macos-11, windows-latest]
+        os: [ubuntu-20.04, macos-latest, macos-12, windows-latest]
         package: [swig, swig-jse]
 
     steps:
@@ -32,7 +32,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.conan2
-          key: ${{ runner.os }}-conan
+          key: conan-${{ runner.os }}-${{ runner.arch }}
 
       - name: Conan version
         run: echo "${{ steps.conan.outputs.version }}"
@@ -53,6 +53,6 @@ jobs:
 
       - name: Upload to swig-jse
         run: |
-          conan remote add swig-jse https://swig.momtchev.com/artifactory/api/conan/swig-jse
+          conan remote add swig-jse https://swig.momtchev.com/artifactory/api/conan/swig-jse || echo ok
           conan remote login swig-jse github -p '${{ secrets.ARTIFACTORY_PASSWORD }}'
           conan upload ${{ matrix.package }} -r=swig-jse
