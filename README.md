@@ -5,7 +5,7 @@ These are the `conan` recipes used for https://swig.momtchev.com/artifactory/api
 They are based on the official `conan` packages by [@valgur](https://github.com/conan-io/conan-center-index/pull/19058) but include the latest versions
 
 * SWIG 4.2.1
-* SWIG JSE 5.0.4
+* SWIG JSE 5.0.5
 
 ## Usage
 
@@ -15,7 +15,7 @@ conan remote add swig-jse https://swig.momtchev.com/artifactory/api/conan/swig-j
 
 ```ini
 [tool_requires]
-swig-jse/[>=5.0.4]
+swig-jse/[>=5.0.5]
 ```
 
 or
