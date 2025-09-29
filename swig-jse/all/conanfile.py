@@ -1,12 +1,12 @@
 import os
 
 from conan import ConanFile
-from conan.tools.apple import is_apple_os
-from conan.tools.env import VirtualBuildEnv
+from conan.tools.apple import is_apple_os, to_apple_arch
+from conan.tools.env import VirtualBuildEnv, Environment
 from conan.tools.files import apply_conandata_patches, chdir, copy, export_conandata_patches, get, rmdir, replace_in_file
 from conan.tools.gnu import Autotools, AutotoolsDeps, AutotoolsToolchain
 from conan.tools.layout import basic_layout
-from conan.tools.microsoft import is_msvc
+from conan.tools.microsoft import is_msvc, unix_path
 from conan.tools.scm import Version
 
 required_conan_version = ">=1.53.0"
@@ -18,7 +18,7 @@ class SwigConan(ConanFile):
     license = "GPL-3.0-or-later"
     url = "https://swig.momtchev.com/artifactory/api/conan/swig-jse"
     homepage = "http://github.com/mmomtchev/swig"
-    topics = ("javascript", "python", "wrapper")
+    topics = ("swig", "javascript", "python", "wrapper")
 
     package_type = "static-library"
     settings = "os", "arch", "compiler", "build_type"
@@ -46,7 +46,7 @@ class SwigConan(ConanFile):
 
     def requirements(self):
         if self._use_pcre2:
-            self.requires("pcre2/10.42")
+            self.requires("pcre2/10.43")
         else:
             self.requires("pcre/8.45")
         if is_apple_os(self):
@@ -62,10 +62,17 @@ class SwigConan(ConanFile):
                 self.tool_requires("msys2/cci.latest")
             if is_msvc(self):
                 self.tool_requires("cccl/1.3")
-        if is_msvc(self):
-            self.tool_requires("winflexbison/2.5.25")
+        if Version(self.version) >= "4.2":
+            if is_msvc(self):
+                # bison 3.8.2 is not ready for msvc
+                self.tool_requires("bison/3.7.6")
+            else:
+                self.tool_requires("bison/3.8.2")
         else:
-            self.tool_requires("bison/3.8.2")
+            if is_msvc(self):
+                self.tool_requires("winflexbison/2.5.25")
+            else:
+                self.tool_requires("bison/3.8.2")
         self.tool_requires("automake/1.16.5")
 
     def source(self):
@@ -83,8 +90,8 @@ class SwigConan(ConanFile):
             f"--host={self.settings.arch}",
             "--with-swiglibdir=${prefix}/bin/swiglib",
             f"--with-{pcre}-prefix={self.dependencies[pcre].package_folder}",
-            "--program-suffix=-jse"
         ]
+        tc.extra_cflags.append("-DHAVE_PCRE=1")
         if self._use_pcre2:
             env.define("PCRE2_LIBS", " ".join("-l" + lib for lib in self.dependencies["pcre2"].cpp_info.libs))
 
@@ -95,20 +102,46 @@ class SwigConan(ConanFile):
             if is_msvc(self):
                 env.define("CC", "cccl -FS")
                 env.define("CXX", "cccl -FS")
-                env.define("BISON", "win_bison")
                 tc.configure_args.append("--disable-ccache")
             else:
                 tc.extra_ldflags.append("-static")
                 tc.configure_args.append("LIBS=-lmingwex -lssp")
         elif is_apple_os(self):
-            if self.settings.arch == "armv8":
-                # FIXME: Apple ARM should be handled by build helpers
-                tc.extra_cxxflags.append("-arch arm64")
-                tc.extra_ldflags.append("-arch arm64")
+            tc.extra_cflags.append(f"-arch {to_apple_arch(self)}")
+            tc.extra_cxxflags.append(f"-arch {to_apple_arch(self)}")
+            tc.extra_ldflags.append(f"-arch {to_apple_arch(self)}")
         tc.generate(env)
 
-        deps = AutotoolsDeps(self)
-        deps.generate()
+        if is_msvc(self):
+            # Custom AutotoolsDeps for cl-like compilers
+            # workaround for https://github.com/conan-io/conan/issues/12784
+            includedirs = []
+            defines = []
+            libs = []
+            libdirs = []
+            linkflags = []
+            cxxflags = []
+            cflags = []
+            for dependency in self.dependencies.values():
+                deps_cpp_info = dependency.cpp_info.aggregated_components()
+                includedirs.extend(deps_cpp_info.includedirs)
+                defines.extend(deps_cpp_info.defines)
+                libs.extend(deps_cpp_info.libs + deps_cpp_info.system_libs)
+                libdirs.extend(deps_cpp_info.libdirs)
+                linkflags.extend(deps_cpp_info.sharedlinkflags + deps_cpp_info.exelinkflags)
+                cxxflags.extend(deps_cpp_info.cxxflags)
+                cflags.extend(deps_cpp_info.cflags)
+
+            env = Environment()
+            env.append("CPPFLAGS", [f"-I{unix_path(self, p)}" for p in includedirs] + [f"-D{d}" for d in defines])
+            env.append("_LINK_", [lib if lib.endswith(".lib") else f"{lib}.lib" for lib in libs])
+            env.append("LDFLAGS", [f"-L{unix_path(self, p)}" for p in libdirs] + linkflags)
+            env.append("CXXFLAGS", cxxflags)
+            env.append("CFLAGS", cflags)
+            env.vars(self).save_script("conanautotoolsdeps_cl_workaround")
+        else:
+            deps = AutotoolsDeps(self)
+            deps.generate()
 
     def _patch_sources(self):
         apply_conandata_patches(self)

@@ -1,8 +1,8 @@
---- Source/Modules/main.cxx.orig	2024-02-24 00:57:14.000000000 +0100
-+++ Source/Modules/main.cxx	2024-03-31 13:53:21.747253769 +0200
-@@ -861,6 +861,32 @@
- 
- static void SWIG_exit_handler(int status);
+--- Source/Modules/main.cxx
++++ Source/Modules/main.cxx
+@@ -879,6 +879,32 @@ static void getoptions(int argc, char *a
+   }
+ }
  
 +#if defined(HAVE_UNISTD_H) && !defined(_WIN32)
 +#include <libgen.h>
@@ -33,7 +33,7 @@
  int SWIG_main(int argc, char *argv[], const TargetLanguageModule *tlm) {
    char *c;
  
-@@ -900,12 +926,14 @@
+@@ -939,12 +965,14 @@ int SWIG_main(int argc, char *argv[], co
      char *p;
      if (!(GetModuleFileName(0, buf, MAX_PATH) == 0 || (p = strrchr(buf, '\\')) == 0)) {
        *(p + 1) = '\0';
