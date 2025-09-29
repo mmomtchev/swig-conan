@@ -55,4 +55,4 @@ jobs:
         run: |
           conan remote add swig-jse https://swig.momtchev.com/artifactory/api/conan/swig-jse || echo ok
           conan remote login swig-jse github -p '${{ secrets.ARTIFACTORY_PASSWORD }}'
-          conan upload ${{ matrix.package }} -r=swig-jse
+          conan upload "*" -r=swig-jse
