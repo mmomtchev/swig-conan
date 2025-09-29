@@ -90,6 +90,7 @@ class SwigConan(ConanFile):
             f"--host={self.settings.arch}",
             "--with-swiglibdir=${prefix}/bin/swiglib",
             f"--with-{pcre}-prefix={self.dependencies[pcre].package_folder}",
+            "--program-suffix=-jse"
         ]
         tc.extra_cflags.append("-DHAVE_PCRE=1")
         if self._use_pcre2:
