@@ -53,11 +53,11 @@ class SwigConan(ConanFile):
 
     def build_requirements(self):
         if self._use_pcre2:
-            self.tool_requires("pcre2/10.43")
+            self.requires("pcre2/10.43", run=False)
         else:
-            self.tool_requires("pcre/8.45")
+            self.requires("pcre/8.45", run=False)
         if is_apple_os(self):
-            self.tool_requires("libgettext/0.22")
+            self.requires("libgettext/0.22", run=False)
         if self._settings_build.os == "Windows":
             self.win_bash = True
             if not self.conf.get("tools.microsoft.bash:path", check_type=str):
