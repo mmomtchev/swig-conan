@@ -33,3 +33,18 @@ patches:
     - patch_file: "patches/0003-504-swig-jse-configure-path.patch"
       patch_type: "portability"
       patch_description: "more robust out-of-source build detection"
+
+  "5.0.5":
+    - patch_file: "patches/001-5.0.5-do-not-define-SWIG_LIB_WIN_UNIX.patch"
+      patch_type: "portability"
+      patch_description: "swig -swiglib should return the correct path next to the binary even when relocated"
+
+  "5.0.6":
+    - patch_file: "patches/001-5.0.6-do-not-define-SWIG_LIB_WIN_UNIX.patch"
+      patch_type: "portability"
+      patch_description: "swig -swiglib should return the correct path next to the binary even when relocated"
+
+  "5.0.7":
+    - patch_file: "patches/001-5.0.7-do-not-define-SWIG_LIB_WIN_UNIX.patch"
+      patch_type: "portability"
+      patch_description: "swig -swiglib should return the correct path next to the binary even when relocated"

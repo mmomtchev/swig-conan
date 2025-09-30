@@ -20,7 +20,7 @@ class SwigConan(ConanFile):
     homepage = "http://github.com/mmomtchev/swig"
     topics = ("swig", "javascript", "python", "wrapper")
 
-    package_type = "static-library"
+    package_type = "application"
     settings = "os", "arch", "compiler", "build_type"
 
     @property
@@ -45,17 +45,19 @@ class SwigConan(ConanFile):
         return Version(self.version) >= "4.1"
 
     def requirements(self):
-        if self._use_pcre2:
-            self.requires("pcre2/10.43")
-        else:
-            self.requires("pcre/8.45")
-        if is_apple_os(self):
-            self.requires("libgettext/0.22")
+        return
 
     def package_id(self):
         del self.info.settings.compiler
+        del self.info.settings.build_type
 
     def build_requirements(self):
+        if self._use_pcre2:
+            self.requires("pcre2/10.43", run=False, libs=True, build=True, visible=False)
+        else:
+            self.requires("pcre/8.45", run=False, libs=True, build=True, visible=False)
+        if is_apple_os(self):
+            self.requires("libgettext/0.22", run=False, libs=True, build=True, visible=False)
         if self._settings_build.os == "Windows":
             self.win_bash = True
             if not self.conf.get("tools.microsoft.bash:path", check_type=str):
@@ -89,12 +91,12 @@ class SwigConan(ConanFile):
         tc.configure_args += [
             f"--host={self.settings.arch}",
             "--with-swiglibdir=${prefix}/bin/swiglib",
-            f"--with-{pcre}-prefix={self.dependencies[pcre].package_folder}",
+            f"--with-{pcre}-prefix={self.dependencies.build[pcre].package_folder}",
             "--program-suffix=-jse"
         ]
         tc.extra_cflags.append("-DHAVE_PCRE=1")
         if self._use_pcre2:
-            env.define("PCRE2_LIBS", " ".join("-l" + lib for lib in self.dependencies["pcre2"].cpp_info.libs))
+            env.define("PCRE2_LIBS", " ".join("-l" + lib for lib in self.dependencies.build["pcre2"].cpp_info.libs))
 
         if self.settings.os in ["Linux", "FreeBSD"]:
             tc.configure_args.append("LIBS=-ldl")
