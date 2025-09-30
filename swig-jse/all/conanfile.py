@@ -20,7 +20,7 @@ class SwigConan(ConanFile):
     homepage = "http://github.com/mmomtchev/swig"
     topics = ("swig", "javascript", "python", "wrapper")
 
-    package_type = "static-library"
+    package_type = "application"
     settings = "os", "arch", "compiler", "build_type"
 
     @property
@@ -45,17 +45,19 @@ class SwigConan(ConanFile):
         return Version(self.version) >= "4.1"
 
     def requirements(self):
+        return
+
+    def package_id(self):
+        del self.info.settings.compiler
+        del self.info.settings.build_type
+
+    def build_requirements(self):
         if self._use_pcre2:
             self.requires("pcre2/10.43")
         else:
             self.requires("pcre/8.45")
         if is_apple_os(self):
             self.requires("libgettext/0.22")
-
-    def package_id(self):
-        del self.info.settings.compiler
-
-    def build_requirements(self):
         if self._settings_build.os == "Windows":
             self.win_bash = True
             if not self.conf.get("tools.microsoft.bash:path", check_type=str):
