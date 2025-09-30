@@ -51,8 +51,15 @@ jobs:
       - name: Create package
         run: conan create ${{ matrix.package }}/all --version ${{ env.LATEST }} --build=missing
 
+      - name: List all dependencies
+        id: deps
+        shell: bash
+        run: |
+          echo pkgs=`conan graph info --require=${{ matrix.package }}/${{ env.LATEST }} -f json | jq '.graph.nodes."0".dependencies | to_entries | .[].value.ref'` >> $GITHUB_OUTPUT
+
       - name: Upload to swig-jse
+        shell: bash
         run: |
           conan remote add swig-jse https://swig.momtchev.com/artifactory/api/conan/swig-jse || echo ok
           conan remote login swig-jse github -p '${{ secrets.ARTIFACTORY_PASSWORD }}'
-          conan upload "*" -r=swig-jse
+          for pkg in ${{ steps.deps.outputs.pkgs }}; do conan upload $pkg -r=swig-jse; done
