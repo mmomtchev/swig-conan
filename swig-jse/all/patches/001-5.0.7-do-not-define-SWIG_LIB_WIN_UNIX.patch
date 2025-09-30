@@ -1,8 +1,8 @@
 diff --git a/configure.ac b/configure.ac
-index 40625f83d..06bc93f5d 100644
+index 4aa5ba98d..f82458384 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -2859,7 +2859,7 @@ case $build in
+@@ -2889,7 +2889,7 @@ case $build in
    *-*-cygwin*) SWIG_LIB_WIN_UNIX=`cygpath --mixed "$SWIG_LIB"`;;
    *) SWIG_LIB_WIN_UNIX="";;
  esac
