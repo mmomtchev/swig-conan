@@ -11,6 +11,9 @@ sources:
   "5.0.7":
     url: "https://github.com/mmomtchev/swig/archive/refs/tags/v5.0.7.tar.gz"
     sha256: "4f786a910508d7fa4cb748a8d63fec66944be91373015977c7ad9e5426cb991a"
+  "5.0.10":
+    url: "https://github.com/mmomtchev/swig/archive/refs/tags/v5.0.10.tar.gz"
+    sha256: "28110149aa2cf3dfeffb112a9c54bdeed8d7bbc387a53249fba54b74af6265a8"
 patches:
   "5.0.3":
     - patch_file: "patches/0001-swig-jse-linux-library-path.patch"
