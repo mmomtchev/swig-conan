@@ -43,6 +43,10 @@ class SwigConan(ConanFile):
     @property
     def _use_pcre2(self):
         return Version(self.version) >= "4.1"
+    
+    @property
+    def _relocatable_support(self):
+        return Version(self.version) >= "5.0.8"
 
     def requirements(self):
         return
@@ -90,10 +94,18 @@ class SwigConan(ConanFile):
         pcre = "pcre2" if self._use_pcre2 else "pcre"
         tc.configure_args += [
             f"--host={self.settings.arch}",
-            "--with-swiglibdir=${prefix}/bin/swiglib",
             f"--with-{pcre}-prefix={self.dependencies.build[pcre].package_folder}",
             "--program-suffix=-jse"
         ]
+        if self._relocatable_support:
+            tc.configure_args += [
+                "--with-swiglibdir=swiglib",
+                "--enable-relocatable"
+            ]
+        else:
+            tc.configure_args += [
+                "--with-swiglibdir=${prefix}/bin/swiglib"
+            ]
         tc.extra_cflags.append("-DHAVE_PCRE=1")
         if self._use_pcre2:
             env.define("PCRE2_LIBS", " ".join("-l" + lib for lib in self.dependencies.build["pcre2"].cpp_info.libs))
@@ -189,7 +201,8 @@ class SwigConan(ConanFile):
         self.cpp_info.set_property("cmake_target_name", "SWIG::SWIG")
         self.cpp_info.set_property("cmake_build_modules", [self._cmake_module_rel_path])
 
-        self.buildenv_info.define_path("SWIG_LIB", os.path.join(self.package_folder, "bin", "swiglib"))
+        if not self._relocatable_support:
+            self.buildenv_info.define_path("SWIG_LIB", os.path.join(self.package_folder, "bin", "swiglib"))
 
         # TODO: to remove in conan v2 once cmake_find_package_* generators removed
         self.cpp_info.names["cmake_find_package"] = "SWIG"
@@ -199,4 +212,5 @@ class SwigConan(ConanFile):
 
         bindir = os.path.join(self.package_folder, "bin")
         self.env_info.PATH.append(bindir)
-        self.env_info.SWIG_LIB = os.path.join(self.package_folder, "bin", "swiglib")
+        if not self._relocatable_support:
+            self.env_info.SWIG_LIB = os.path.join(self.package_folder, "bin", "swiglib")
