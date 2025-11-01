@@ -4,7 +4,7 @@ These are the `conan` recipes used for https://swig.momtchev.com/artifactory/api
 
 They are based on the official `conan` packages by [@valgur](https://github.com/conan-io/conan-center-index/pull/19058) but include the latest versions
 
-* SWIG 4.3.0
+* SWIG 4.4.0
 * SWIG JSE 5.0.10
 
 ## Usage
@@ -24,7 +24,7 @@ or
 
 ```ini
 [tool_requires]
-swig/[>=4.3.0]
+swig/[>=4.4.0]
 ```
 
 ### Use without conan
