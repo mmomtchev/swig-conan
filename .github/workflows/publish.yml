@@ -43,7 +43,7 @@ jobs:
 
       - name: Identify latest version
         run: |
-          pip install pyyaml
+          pip install -r requirements.txt
           python get_version.py ${{ matrix.package }}/config.yml
           python get_version.py ${{ matrix.package }}/config.yml >> $GITHUB_ENV
         shell: bash
