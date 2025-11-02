@@ -9,7 +9,9 @@ They are based on the official `conan` packages by [@valgur](https://github.com/
 
 ## Usage
 
-```
+Add the SWIG JSE repository:
+
+```bash
 conan remote add swig-jse https://swig.momtchev.com/artifactory/api/conan/swig-jse
 ```
 
@@ -28,6 +30,12 @@ swig/[>=4.4.0]
 ```
 
 ### Use without conan
+
+Add the SWIG JSE repository:
+
+```bash
+conan remote add swig-jse https://swig.momtchev.com/artifactory/api/conan/swig-jse
+```
 
 Download and install the package:
 ```bash
