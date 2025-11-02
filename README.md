@@ -30,33 +30,11 @@ swig/[>=4.4.0]
 ### Use without conan
 
 Download and install the package:
-```
-conan install -r swig-jse -r conancenter --requires swig-jse/5.0.10
-```
-
-Check the package ID:
 ```bash
-conan list 'swig-jse/5.0.10:*'
+conan install -of /tmp --requires swig-jse/5.0.10 --deployer-folder=${TARGET_FOLDER} --deployer-package='*' --deployer=runtime_deploy
 ```
 
-Find its directory (the hex number is the package ID):
-```bash
-conan cache path swig-jse/5.0.10:dcf68e932572755309a5f69f3cee1bede410e907
-export SWIG_DIR=`conan cache path swig-jse/5.0.10:dcf68e932572755309a5f69f3cee1bede410e907`
-```
-
-Try running:
-```bash
-SWIG_LIB=${SWIG_DIR}/swiglib ${SWIG_DIR}/swig-jse
-```
-
-If you are using SWIG main or SWIG JSE <5.0.8, you will also need:
-
-```bash
-export SWIG_LIB=${SWIG_DIR}/swiglib
-```
-
-Starting from SWIG JSE 5.0.8, `SWIG_LIB` is automatic from the binary location.
+SWIG JSE will be available in `${TARGET_FOLDER}` with the shell scripts required to activate the environment in `/tmp`. You do not need any activation starting from SWIG JSE 5.0.8, SWIG main or SWIG JSE <5.0.8 need the `SWIG_LIB` environment variable.
 
 # Support platforms
 
