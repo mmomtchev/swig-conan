@@ -93,9 +93,6 @@ class SwigConan(ConanFile):
             "--with-swiglibdir=${prefix}/bin/swiglib",
             f"--with-{pcre}-prefix={self.dependencies.build[pcre].package_folder}",
         ]
-        tc.extra_cflags.append("-DHAVE_PCRE=1")
-        if self._use_pcre2:
-            env.define("PCRE2_LIBS", " ".join("-l" + lib for lib in self.dependencies.build["pcre2"].cpp_info.libs))
 
         if self.settings.os in ["Linux", "FreeBSD"]:
             tc.configure_args.append("LIBS=-ldl")
@@ -145,16 +142,7 @@ class SwigConan(ConanFile):
             deps = AutotoolsDeps(self)
             deps.generate()
 
-    def _patch_sources(self):
-        apply_conandata_patches(self)
-        # Rely on AutotoolsDeps instead of pcre2-config
-        # https://github.com/swig/swig/blob/v4.1.1/configure.ac#L70-L92
-        # https://github.com/swig/swig/blob/v4.0.2/configure.ac#L65-L86
-        replace_in_file(self, os.path.join(self.source_folder, "configure.ac"),
-                        'AS_IF([test "x$with_pcre" != xno],', 'AS_IF([false],')
-
     def build(self):
-        self._patch_sources()
         with chdir(self, self.source_folder):
             autotools = Autotools(self)
             self.run("./autogen.sh")
