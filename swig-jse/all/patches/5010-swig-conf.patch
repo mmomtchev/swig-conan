@@ -1,5 +1,5 @@
 diff --git a/configure.ac b/configure.ac
-index 2898f3eed..7db4e02a3 100644
+index 2898f3eed..15d206eb7 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -2907,9 +2907,19 @@ AC_SUBST(SWIG_LIB_INSTALL)
@@ -19,7 +19,7 @@ index 2898f3eed..7db4e02a3 100644
  esac
 +if test "x${swig_lib_win_unix}" != "x"; 
 +  AC_MSG_NOTICE([SWIG Windows UNIX path: ${wig_lib_win_unix}])
-+  SWIG_LIB=${swig_lib_win_unix}
++  swig_lib=${swig_lib_win_unix}
 +fi
  AC_DEFINE_DIR(SWIG_LIB, swig_lib, [Directory for SWIG system-independent libraries])
  
