@@ -51,3 +51,8 @@ patches:
     - patch_file: "patches/001-5.0.7-do-not-define-SWIG_LIB_WIN_UNIX.patch"
       patch_type: "portability"
       patch_description: "swig -swiglib should return the correct path next to the binary even when relocated"
+
+  "5.0.10":
+    - patch_file: "patches/5010-swig-conf.patch"
+      patch_type: "portability"
+      patch_description: "partially restore swig-lib-win-unix"
