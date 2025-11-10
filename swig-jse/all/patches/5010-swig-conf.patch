@@ -1,8 +1,8 @@
 diff --git a/configure.ac b/configure.ac
-index 2898f3eed..55c887dd2 100644
+index 2898f3eed..7db4e02a3 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -2907,9 +2907,18 @@ AC_SUBST(SWIG_LIB_INSTALL)
+@@ -2907,9 +2907,19 @@ AC_SUBST(SWIG_LIB_INSTALL)
  
  case $build in
    # Windows does not understand unix directories. Convert into a windows directory with drive letter.
@@ -17,7 +17,8 @@ index 2898f3eed..55c887dd2 100644
 +    ;;
 +  *-*-cygwin*) swig_lib_win_unix=`cygpath --mixed "$swig_lib"` ;;
  esac
-+if test "x${swig_lib_win_unix}" != "x"; then
++if test "x${swig_lib_win_unix}" != "x"; 
++  AC_MSG_NOTICE([SWIG Windows UNIX path: ${wig_lib_win_unix}])
 +  SWIG_LIB=${swig_lib_win_unix}
 +fi
  AC_DEFINE_DIR(SWIG_LIB, swig_lib, [Directory for SWIG system-independent libraries])
