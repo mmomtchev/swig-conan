@@ -71,4 +71,4 @@ class TestPackageConan(ConanFile):
                 self._test_swig_module()
             self.run("swig-jse -version")
             self.run("swig-jse -swiglib")
-            self.run("swig-jse -javascript -napi -c++ test.i")
+            self.run(f"swig-jse -javascript -napi -c++ {os.path.join(self.package_folder, "test.i")}")
