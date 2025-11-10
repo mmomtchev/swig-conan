@@ -48,6 +48,8 @@ SWIG JSE will be available in `${TARGET_FOLDER}` with the shell scripts required
 
 Both packages have been tested on:
   - `Linux-gcc-x64`
+  - `Linux-gcc-arm64`
   - `macOS-clang-x64`
   - `macOS-clang-arm64`
   - `Windows-MSVC-MSYS2-x64`
+  - `Windows-MSVC-MSYS2-arm64`
