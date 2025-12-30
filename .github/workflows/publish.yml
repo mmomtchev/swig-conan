@@ -53,6 +53,11 @@ jobs:
           python get_version.py ${{ matrix.package }}/config.yml >> $GITHUB_ENV
         shell: bash
 
+      - name: Login to artifactory
+        run: |
+          conan remote add swig-jse https://swig.momtchev.com/artifactory/api/conan/swig-jse || echo ok
+          conan remote login swig-jse github -p '${{ secrets.ARTIFACTORY_PASSWORD }}'
+
       - name: Create package
         run: conan create ${{ matrix.package }}/all --version ${{ env.LATEST }} --build=missing
 
@@ -65,6 +70,4 @@ jobs:
       - name: Upload to swig-jse
         shell: bash
         run: |
-          conan remote add swig-jse https://swig.momtchev.com/artifactory/api/conan/swig-jse || echo ok
-          conan remote login swig-jse github -p '${{ secrets.ARTIFACTORY_PASSWORD }}'
           for pkg in ${{ steps.deps.outputs.pkgs }}; do conan upload $pkg -r=swig-jse; done
